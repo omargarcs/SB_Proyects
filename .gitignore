@@ -24,6 +24,9 @@
 */*/buildNumber.properties
 */*/.mvn/timing.properties
 */*/.mvn/wrapper/maven-wrapper.jar
+*/*/.mvn
+*/*/mvnw.*
+*/*/mvnw
 
 ##############################
 ## IntelliJ
@@ -39,3 +42,4 @@
 ## OS X
 ##############################
 .DS_Store
+*/*/.gitignore
