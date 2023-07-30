@@ -32,7 +32,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public Hotel get(String id) {
-//        return hotelRepository.findById(id).orElseThrow(()-> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+//        return hotelRepository.findById(id).orElseThrow(()-> new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
         return hotelRepository.findById(id).orElseThrow(()-> new
                 ResourceNotFoundException("Hotel no encontrado con el ID: " + id));
     }
