@@ -1,4 +1,4 @@
-package com.ogarcs.hotel.hotelservice;
+package com.ogarcs.hotel;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
