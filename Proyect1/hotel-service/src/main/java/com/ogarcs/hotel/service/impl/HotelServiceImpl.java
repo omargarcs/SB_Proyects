@@ -1,6 +1,7 @@
 package com.ogarcs.hotel.service.impl;
 
 import com.ogarcs.hotel.entity.Hotel;
+import com.ogarcs.hotel.exceptions.ResourceNotFoundException;
 import com.ogarcs.hotel.repository.HotelRepository;
 import com.ogarcs.hotel.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public Hotel get(String id) {
-        return hotelRepository.findById(id).orElseThrow(()-> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+//        return hotelRepository.findById(id).orElseThrow(()-> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+        return hotelRepository.findById(id).orElseThrow(()-> new
+                ResourceNotFoundException("Hotel no encontrado con el ID: " + id));
     }
 }
