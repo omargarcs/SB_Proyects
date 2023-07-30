@@ -17,7 +17,7 @@ public class GlobalExceptionController {
         Map map = new HashMap();
         map.put("message", resourceNotFoundException.getMessage());
         map.put("success", false);
-        map.put("status", HttpStatus.NOT_FOUND;
+        map.put("status", HttpStatus.NOT_FOUND);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
     }
 }
