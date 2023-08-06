@@ -15,4 +15,5 @@ public class Calificacion {
     private String hotelId;
     private int calificacion;
     private String observaciones;
+    private Hotel hotel;
 }

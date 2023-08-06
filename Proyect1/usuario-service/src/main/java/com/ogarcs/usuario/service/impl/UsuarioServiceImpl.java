@@ -1,6 +1,7 @@
 package com.ogarcs.usuario.service.impl;
 
 import com.ogarcs.usuario.entity.Calificacion;
+import com.ogarcs.usuario.entity.Hotel;
 import com.ogarcs.usuario.entity.Usuario;
 import com.ogarcs.usuario.exceptions.ResourceNotFoundException;
 import com.ogarcs.usuario.repository.UsuarioRepository;
@@ -8,12 +9,16 @@ import com.ogarcs.usuario.service.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -43,12 +48,24 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findById(usuarioId).
                 orElseThrow(()-> new ResourceNotFoundException
                         ("Usuario no encontrado con el ID: " + usuarioId));
-        ArrayList<Calificacion> calificacionesDelUsuario = restTemplate.
-                getForObject("http://localhost:8083/calificacion/usuarios/" +
-                        usuario.getUsuarioId(), ArrayList.class);
-        logger.info("{}", calificacionesDelUsuario);
 
-        usuario.setCalificaciones(calificacionesDelUsuario);
+        Calificacion[] calificacionesDelUsuario = restTemplate.
+                getForObject("http://CALIFICACION-SERVICE/calificacion/usuarios/" +
+                        usuario.getUsuarioId(), Calificacion[].class);
+
+        List<Calificacion> calificaciones = Arrays.stream(calificacionesDelUsuario).collect(Collectors.toList());
+
+        List<Calificacion> listaCalificaciones = calificaciones.stream().map(calificacion -> {
+            System.out.println(calificacion.getHotelId());
+            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hoteles/" +
+                    calificacion.getHotelId(), Hotel.class);
+            Hotel hotel = forEntity.getBody();
+            logger.info("Respuesta con código: {}", forEntity.getStatusCode());
+            calificacion.setHotel(hotel);
+            return calificacion;
+        }).collect(Collectors.toList());
+
+        usuario.setCalificaciones(listaCalificaciones);
 
         return usuario;
     }
