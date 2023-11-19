@@ -4,6 +4,7 @@ import com.ogarcs.usuario.entity.Calificacion;
 import com.ogarcs.usuario.entity.Hotel;
 import com.ogarcs.usuario.entity.Usuario;
 import com.ogarcs.usuario.exceptions.ResourceNotFoundException;
+import com.ogarcs.usuario.external.services.HotelService;
 import com.ogarcs.usuario.repository.UsuarioRepository;
 import com.ogarcs.usuario.service.UsuarioService;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
+@Service("usuarioServiceImpl")
 public class UsuarioServiceImpl implements UsuarioService {
 
     private Logger logger = LoggerFactory.getLogger(UsuarioService.class);
@@ -30,6 +31,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private HotelService hotelService;
 
     @Override
     public Usuario saveUsuario(Usuario usuario) {
@@ -57,10 +61,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         List<Calificacion> listaCalificaciones = calificaciones.stream().map(calificacion -> {
             System.out.println(calificacion.getHotelId());
-            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hoteles/" +
-                    calificacion.getHotelId(), Hotel.class);
-            Hotel hotel = forEntity.getBody();
-            logger.info("Respuesta con código: {}", forEntity.getStatusCode());
+            //ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hoteles/" +
+            //        calificacion.getHotelId(), Hotel.class);
+            Hotel hotel = hotelService.getHotel(calificacion.getHotelId());
+            //logger.info("Respuesta con código: {}", forEntity.getStatusCode());
             calificacion.setHotel(hotel);
             return calificacion;
         }).collect(Collectors.toList());
